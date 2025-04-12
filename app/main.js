@@ -9,13 +9,13 @@ const server = net.createServer((socket) => {
     socket.end();
   });
   socket.on("data", (data) => {
-    console.log(data);
-    const value = data.toString().split(" ")[5];
+    const value = data.toString().split('\r\n');
     const path = data.toString().split(" ")[1];
+    const lines=value.find(v=>v.toLowerCase().startsWith('user-agent'));
     if (path === "/user-agent") {
     //   socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
     socket.write(
-        `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${value.length}\r\n\r\n${value}`
+        `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${lines.length}\r\n\r\n${lines}`
       );
     }else{
         socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
