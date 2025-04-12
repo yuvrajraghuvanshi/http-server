@@ -9,22 +9,28 @@ const server = net.createServer((socket) => {
     socket.end();
   });
   socket.on("data", (data) => {
-    const value = data.toString().split("\r\n");
+    const request = data.toString();
+    const headers= request.split("\r\n");
+    const lines=headers.find(h=>h.toLowerCase().startsWith("user-agent:"));
+   const value=lines?lines.split(': '):'Unknown';
     const path = data.toString().split(" ")[1];
-    data = data.toString();
-    const lines = value.find((v) => v.toLowerCase().startsWith("user-agent:"));
-    const showValue = lines ? lines.split(": ")[1] : "Unknown";
+    console.log("heeelle", data.toString().split(" ")[1]);
     if (path === "/user-agent") {
+      socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
+    } else if (path.startsWith(`/echo/`)) {
+      const responseStatus = path.startsWith(`/echo/`)
+        ? "200 OK"
+        : "404 Not Found";
+      const lastRoute = path.replace(`/echo/`, "");
+      console.log({ length: lastRoute.length });
       socket.write(
-        `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${showValue.length}\r\n\r\n${showValue}`
+        `HTTP/1.1 ${responseStatus}\r\nContent-Type: text/plain\r\nContent-Length: ${lastRoute.length}\r\n\r\n${lastRoute}`
       );
-    } else if (path.includes("/echo/")) {
-      const content = data.split("/echo/")[1];
-      socket.write(
-        `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`
-      );
-    } else {
-      socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n`);
+    }else{
+        const userAgent=value[2];
+        socket.write(
+            `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`
+          );
     }
   });
 });
