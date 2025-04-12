@@ -16,12 +16,10 @@ const server = net.createServer((socket) => {
     );
     const value = lines ? lines.split(": ") : "Unknown";
     const path = data.toString().split(" ")[1];
-    console.log("heeelle", data.toString().split(" ")[1]);
-    console.log("heeelle", value);
-    if (path === "/user-agent") {
+    if (path === "/") {
+      socket.write("HTTP/1.1 200 OK\r\n\r\n");
+    } else if (path === "/user-agent") {
       const userAgent = value[1];
-      console.log("first",userAgent)
-      console.log("first",userAgent.length)
       socket.write(
         `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`
       );
@@ -35,7 +33,7 @@ const server = net.createServer((socket) => {
         `HTTP/1.1 ${responseStatus}\r\nContent-Type: text/plain\r\nContent-Length: ${lastRoute.length}\r\n\r\n${lastRoute}`
       );
     } else {
-      socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
+      socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
     }
   });
 });
