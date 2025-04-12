@@ -11,10 +11,17 @@ const server = net.createServer((socket) => {
   socket.on("data", (data) => {
     console.log(data);
     const path = data.toString().split(" ")[1];
-    const responseStatus = path.startsWith(`/echo/`) ? "200 OK" : "404 Not Found";
-    const lastRoute=path.replace(`/echo/`,'');
-    console.log({length:lastRoute.length})
-    socket.write(`HTTP/1.1 ${responseStatus}\r\nContent-Type: text/plain\r\nContent-Length: ${lastRoute.length}\r\n\r\n${lastRoute}`);
+    if (path === "/") {
+      socket.write(`HTTP/1.1 200 OK\r\n`);
+    }else{
+    const responseStatus = path.startsWith(`/echo/`)
+      ? "200 OK"
+      : "404 Not Found";
+    const lastRoute = path.replace(`/echo/`, "");
+    console.log({ length: lastRoute.length });
+    socket.write(
+      `HTTP/1.1 ${responseStatus}\r\nContent-Type: text/plain\r\nContent-Length: ${lastRoute.length}\r\n\r\n${lastRoute}`
+    );}
   });
 });
 
