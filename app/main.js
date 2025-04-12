@@ -12,11 +12,11 @@ const server = net.createServer((socket) => {
     const value = data.toString().split('\r\n');
     const path = data.toString().split(" ")[1];
     const lines=value.find(v=>v.toLowerCase().startsWith('user-agent'));
-    const showValue=lines.split(" ")[1];
+    const showValue=lines.split(": ")[1];
     if (path === "/user-agent") {
     //   socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
     socket.write(
-        `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${lines.length}\r\n\r\n${showValue}`
+        `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${showValue.length}\r\n\r\n${showValue}`
       );
     }else{
         socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
