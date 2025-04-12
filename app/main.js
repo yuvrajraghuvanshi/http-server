@@ -12,7 +12,8 @@ const server = net.createServer((socket) => {
     console.log(data);
     const path = data.toString().split(" ")[1];
     const responseStatus = path.startsWith(`/echo/`) ? "200 OK" : "404 Not Found";
-    socket.write(`HTTP/1.1 ${responseStatus}\r\nContent-Type: text/plain\r\nContent-Length: 3\r\n\r\nabc`);
+    const lastRoute=path.replace(`/echo/`,'');
+    socket.write(`HTTP/1.1 ${responseStatus}\r\nContent-Type: text/plain\r\nContent-Length: ${lastRoute.length()}\r\n\r\nabc`);
   });
 });
 
