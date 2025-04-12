@@ -10,13 +10,18 @@ const server = net.createServer((socket) => {
   });
   socket.on("data", (data) => {
     const request = data.toString();
-    const headers= request.split("\r\n");
-    const lines=headers.find(h=>h.toLowerCase().startsWith("user-agent:"));
-   const value=lines?lines.split(': '):'Unknown';
+    const headers = request.split("\r\n");
+    const lines = headers.find((h) =>
+      h.toLowerCase().startsWith("user-agent:")
+    );
+    const value = lines ? lines.split(": ") : "Unknown";
     const path = data.toString().split(" ")[1];
     console.log("heeelle", data.toString().split(" ")[1]);
     if (path === "/user-agent") {
-      socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
+      const userAgent = value[2];
+      socket.write(
+        `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`
+      );
     } else if (path.startsWith(`/echo/`)) {
       const responseStatus = path.startsWith(`/echo/`)
         ? "200 OK"
@@ -26,11 +31,8 @@ const server = net.createServer((socket) => {
       socket.write(
         `HTTP/1.1 ${responseStatus}\r\nContent-Type: text/plain\r\nContent-Length: ${lastRoute.length}\r\n\r\n${lastRoute}`
       );
-    }else{
-        const userAgent=value[2];
-        socket.write(
-            `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`
-          );
+    } else {
+      socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
     }
   });
 });
