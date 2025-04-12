@@ -20,6 +20,7 @@ const server = net.createServer((socket) => {
     console.log("heeelle", value);
     if (path === "/user-agent") {
       const userAgent = value[2];
+      console.log("first",userAgent.length)
       socket.write(
         `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`
       );
