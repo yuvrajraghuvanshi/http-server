@@ -17,6 +17,7 @@ const server = net.createServer((socket) => {
     const value = lines ? lines.split(": ") : "Unknown";
     const path = data.toString().split(" ")[1];
     console.log("heeelle", data.toString().split(" ")[1]);
+    console.log("heeelle", value);
     if (path === "/user-agent") {
       const userAgent = value[2];
       socket.write(
