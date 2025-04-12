@@ -11,8 +11,8 @@ const server = net.createServer((socket) => {
   socket.on("data", (data) => {
     const value = data.toString().split('\r\n');
     const path = data.toString().split(" ")[1];
-    const lines=value.find(v=>v.toLowerCase().startsWith('user-agent'));
-    const showValue=lines.split(": ")[1];
+    const lines=value.find(v=>v.toLowerCase().startsWith('user-agent:'));
+    const showValue=lines? lines.split(': ')[1]: 'Unknown';
     if (path === "/user-agent") {
     //   socket.write(`HTTP/1.1 200 OK\r\n\r\n`);
     socket.write(
