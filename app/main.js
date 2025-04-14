@@ -21,20 +21,16 @@ const server = net.createServer((socket) => {
       socket.write("HTTP/1.1 200 OK\r\n\r\n");
     } else if (path.startsWith("/files")) {
       const args = process.argv[3];
-      console.log("first",args)
+      console.log("first", args);
       const fileName = path.replace("/files/", "");
-      console.log({ fileName });
-      const filePath = path.join(args, fileName);
-console.log("first,",filePath)
-      fs.readFile(filePath, (err, fileContent) => {
-        if (err) {
-          socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
-        } else {
-          socket.write(
-            `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${fileContent.length}\r\n\r\n`
-          );
-        }
-      });
+      if (fs.existsSync(`${args}/${fileName}`)) {
+        const content = fs.readFileSync(`${args}/${fileName}`);
+        socket.write(
+          `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n${content}\r\n`
+        );
+      } else {
+        socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
+      }
     } else if (path === "/user-agent") {
       const userAgent = value[1];
       socket.write(
