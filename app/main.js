@@ -22,6 +22,7 @@ const server = net.createServer((socket) => {
     }else if(path.startsWith('/files')){
       const args=process.argv[2];
       const fileName=path.replace("/files/","");
+      
       const filePath=path.join(args,fileName);
       fs.readFile(filePath,(err,fileContent)=>{
         if (err) {
