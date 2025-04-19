@@ -23,7 +23,7 @@ const server = net.createServer((socket) => {
       const args = process.argv[3];
       const fileName = path.replace("/files/", "");
       if (fs.existsSync(`${args}/${fileName}`)) {
-        const content = `${args}/${fileName}`;
+        const content = fs.readFileSync(`${args}/${fileName}`);
         socket.write(
           `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n${content}\r\n`
         );
