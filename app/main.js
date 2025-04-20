@@ -12,6 +12,7 @@ const server = net.createServer((socket) => {
   socket.on("data", (data) => {
     const request = data.toString();
     const headers = request.split("\r\n");
+    const method = headers[0].split(" ")[0];
     const lines = headers.find((h) =>
       h.toLowerCase().startsWith("user-agent:")
     );
@@ -19,7 +20,7 @@ const server = net.createServer((socket) => {
     const path = data.toString().split(" ")[1];
     if (path === "/") {
       socket.write("HTTP/1.1 200 OK\r\n\r\n");
-    } else if (path.startsWith("/files")) {
+    } else if (path.startsWith("/files") && method === "GET") {
       const args = process.argv[3];
       const fileName = path.replace("/files/", "");
       if (fs.existsSync(`${args}/${fileName}`)) {
@@ -30,6 +31,14 @@ const server = net.createServer((socket) => {
       } else {
         socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
       }
+    } else if (path.startsWith("/files") && method === "POST") {
+      const filesName = path.replace("/files/", "");
+      // const args=process.argv[3];
+      console.log("second", headers[headers.length - 1]);
+      const body = headers[headers.length - 1];
+      fs.writeFileSync(filesName, body);
+
+      socket.write(`HTTP/1.1 201 CREATED\r\n\r\n`);
     } else if (path === "/user-agent") {
       const userAgent = value[1];
       socket.write(
