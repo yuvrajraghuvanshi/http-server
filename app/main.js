@@ -36,7 +36,7 @@ const server = net.createServer((socket) => {
       // const args=process.argv[3];
       console.log("second", headers[headers.length - 1]);
       const body = headers[headers.length - 1];
-      fs.writeFileSync(filesName, body);
+      fs.writeFileSync(`${process.argv[3]}/${filesName}`, body);
 
       socket.write(`HTTP/1.1 201 Created\r\n\r\n`);
     } else if (path === "/user-agent") {
